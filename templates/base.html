@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="//cdn.jsdelivr.net/npm/medium-editor@latest/dist/js/medium-editor.min.js"></script>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/medium-editor@latest/dist/css/medium-editor.min.css" type="text/css" media="screen" charset="utf-8">
+        <link rel="stylesheet" href="{% static 'css/blog.css' %}">
+        <link href="https://fonts.googleapis.com/css?family=Montserrat|Russo+One&display=swap" rel="stylesheet">
+
+    </head>
+    <body class="loader">
+        <nav class="navbar navbar-default techfont custom-navbar">
+            <div class="container">
+                <ul class = "nav navbar-nav">
+                        <li><a class="navbar-brand bigbrand" href="#">My Cloud</a></li>
+                    <li><a class="nav navbar" href="{% url 'users:home' %}">Profile</a></li>
+                    <li><a class="nav navbar" href="#">About</a></li>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+                    {% if user.is_authenticated %}
+                        <li>
+                            <a href="{% url 'users:update' pk=user.pk %}">Update Profile</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'users:logout' %}">Log Out</a>
+                        </li>
+                    {% else %}
+                        <li>
+                            {% if request.path == '/users/login/' %}
+                                <a class="nav navbar-right" href="{% url 'users:register' %}"><span class="glyphicon glyphicon-user">SignUp</span></a>
+                            {% else %}
+                                <a class="nav navbar-right" href="{% url 'users:login' %}"><span class="glyphicon glyphicon-user">Login</span></a>
+                            {% endif %}
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+        <div class="content container">
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="blog_posts">
+                        {% block content %}
+
+                        {% endblock %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
