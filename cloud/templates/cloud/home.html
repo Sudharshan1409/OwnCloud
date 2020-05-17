@@ -11,14 +11,19 @@
     </div>
     {% for cloud in user.userprofile.clouds.all %}
     <div class="row">
-        <input type="checkbox" name="" value="">
         <a href="{{cloud.data.url}}">
-            <div class="jumbotron">
-                <div class="row">
-                    Title : {{cloud.title}}
-                </div><br>
-                <div class="row">
-                    Description : {{cloud.description}}
+            <div class="col-sm-1">
+                <input type="checkbox" name="" value="">
+            </div>
+            <div class="col-sm-11">
+                <div class="jumbotron">
+                    <div class="row">
+                        Title : {{cloud.title}}
+                    </div><br>
+                    <div class="row">
+                        Description : {{cloud.description}}
+                        sdkfkdsfkdsk;hfds <br>dslkfh <br>dslkfsdkl <br>sdlkfn <br>sdlkfn <br>sdklfn
+                </div>
                 </div>
             </div>
         </a>
