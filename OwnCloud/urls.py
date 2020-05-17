@@ -21,5 +21,6 @@ from .views import HomePage
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/',include('users.urls',namespace='users')),
+    path('cloud/',include('cloud.urls',namespace='cloud')),
     path('',HomePage.as_view(),name = 'home'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

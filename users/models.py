@@ -13,6 +13,7 @@ class UserProfile(models.Model):
     profile_pic = models.ImageField(upload_to="users/profile_pics/", blank = True)
     description = models.TextField(blank = True)
     used_size = models.FloatField(default = 0)
+    percentage_used = models.FloatField(default = 0)
 
 
 
@@ -42,38 +43,4 @@ def update_profile(sender,instance,created, **kwargs):
         instance.userprofile.save()
         print('profile updated')
 
-def user_directory_path(instance, filename):
-    return 'cloud/{0}/{1}'.format(instance.user.username, filename)
-
-class Cloud(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name = 'clouds')
-    title = models.CharField(max_length = 128)
-    data = models.FileField(upload_to = user_directory_path)
-    description = models.TextField(blank = True)
-
-    def __str__ (self):
-        return f"{self.user.username.capitalize()} Cloud {(self.data.size/1024)/1024}"
-
-@receiver(post_delete, sender=Cloud)
-def submission_delete(sender, instance, **kwargs):
-    """
-    This function is used to delete attachments when a file object is deleted.
-    Django does not do this automatically.
-    """
-    instance.data.delete(False)
-
-
-@receiver(post_save,sender=Cloud)
-def update_size(sender,instance,created, **kwargs):
-    if created:
-        user = get_object_or_404(User,pk = instance.user.pk)
-        profile = user.userprofile
-        profile.used_size += (instance.data.size/1024)/1024
-        profile.save()
-
-@receiver(pre_save,sender=Cloud)
-def allowed_to_upload(sender,instance,created, **kwargs):
-    user = get_object_or_404(User,pk = instance.user.pk)
-    profile = user.userprofile
-    if (profile.used_size + (instance.data.size/1024)/1024) > 5120:
-        raise StorageFullException('Memory Full in your cloud')
+# print(Cloud)

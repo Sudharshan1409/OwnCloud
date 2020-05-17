@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load extra_polls %}
+{% block content %}
+    <h1>Welcome to Cloud Page</h1>
+    <br>
+    <h4>Used {{ user.userprofile.percentage_used|rounder:"2" }}% out of 100%</h4>
+    <div class="progress">
+        <div class="progress-bar" role="progressbar" aria-valuenow="70"
+            aria-valuemin="0" aria-valuemax="100" style="width:{{ user.userprofile.percentage_used }}%">
+        </div>
+    </div>
+    {% for cloud in user.userprofile.clouds.all %}
+    <div class="row">
+        <input type="checkbox" name="" value="">
+        <a href="{{cloud.data.url}}">
+            <div class="jumbotron">
+                <div class="row">
+                    Title : {{cloud.title}}
+                </div><br>
+                <div class="row">
+                    Description : {{cloud.description}}
+                </div>
+            </div>
+        </a>
+    </div>
+    {% endfor %}
+{% endblock %}
