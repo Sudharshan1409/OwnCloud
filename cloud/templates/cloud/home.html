@@ -9,24 +9,24 @@
             aria-valuemin="0" aria-valuemax="100" style="width:{{ user.userprofile.percentage_used }}%">
         </div>
     </div>
-    {% for cloud in user.userprofile.clouds.all %}
-    <div class="row">
-        <a href="{{cloud.data.url}}">
-            <div class="col-sm-1">
-                <input type="checkbox" name="" value="">
-            </div>
-            <div class="col-sm-11">
-                <div class="jumbotron">
-                    <div class="row">
-                        Title : {{cloud.title}}
-                    </div><br>
-                    <div class="row">
-                        Description : {{cloud.description}}
-                        sdkfkdsfkdsk;hfds <br>dslkfh <br>dslkfsdkl <br>sdlkfn <br>sdlkfn <br>sdklfn
-                </div>
-                </div>
-            </div>
-        </a>
-    </div>
+    {% for folder in user.userprofile.folders.all %}
+        <table>
+            {% if not folder.parent_folder %}
+                <tr>
+                    <td style="padding:0 15px 0 15px;">
+                        <input type="checkbox" name="" value="">
+                    </td>
+                    <td style="padding:0 15px 0 15px;"><br>
+                        <a href="{% url 'cloud:home' %}">
+                            <div class="jumbotron" style="width=100%;">
+                                <div class="row">
+                                    Name : {{ folder.name }}
+                                </div><br>
+                            </div>
+                        </a>
+                    </td>
+                </tr>
+            {% endif %}
+        </table>
     {% endfor %}
 {% endblock %}

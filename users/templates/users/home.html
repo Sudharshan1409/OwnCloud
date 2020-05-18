@@ -1,6 +1,4 @@
 {% extends "base.html" %}
 {% block content %}
     <h1>{{user.first_name.capitalize}} {{user.last_name.capitalize}}</h1>
-    {{user.userprofile.profile_pic.url}}
-    <img src="{{user.userprofile.profile_pic.url}}" alt="">
 {% endblock %}

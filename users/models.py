@@ -15,8 +15,6 @@ class UserProfile(models.Model):
     used_size = models.FloatField(default = 0)
     percentage_used = models.FloatField(default = 0)
 
-
-
     def get_absolute_url(self):
         return reverse('users:home',kwargs = {'pk':self.pk})
 
