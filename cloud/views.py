@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.views.generic import TemplateView,DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
+from .models import CloudFolder
 # Create your views here.
 
 class CloudHomePage(LoginRequiredMixin,TemplateView):
@@ -15,6 +16,7 @@ class CloudHomePage(LoginRequiredMixin,TemplateView):
         context['hi'] = 55
         return context
 
-class CloudFileFolderPage(LoginRequiredMixin,DetailView):
-    model = User
+class CloudFolderPage(LoginRequiredMixin,DetailView):
+    model = CloudFolder
     template_name = 'cloud/cloud.html'
+    context_object_name = 'cloudfolder'

@@ -17,7 +17,7 @@
                         <input type="checkbox" name="" value="">
                     </td>
                     <td style="padding:0 15px 0 15px;"><br>
-                        <a href="{% url 'cloud:home' %}">
+                        <a href="{% url 'cloud:folder' pk=folder.pk %}">
                             <div class="jumbotron" style="width=100%;">
                                 <div class="row">
                                     Name : {{ folder.name }}

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static %}
+{% load extra_polls %}
+{% block content %}
+    <h1>Welcome to Cloud Page</h1>
+    <br>
+    <h4>Used {{ user.userprofile.percentage_used|rounder:"2" }}% out of 100%</h4>
+    <div class="progress">
+        <div class="progress-bar" role="progressbar" aria-valuenow="70"
+            aria-valuemin="0" aria-valuemax="100" style="width:{{ user.userprofile.percentage_used }}%">
+        </div>
+    </div>
+    <div class="row">
+        {% if cloudfolder.parent_folder %}
+            <a href="{% url 'cloud:folder' pk=cloudfolder.parent_folder.pk %}"><img src="{% static 'images/cloud/parent_folder.png' %}" style="max-width:30px;max-height:30px;" alt=""></a>
+        {% else %}
+            <a href="{% url 'cloud:home' %}"><img src="{% static 'images/cloud/parent_folder.png' %}" style="max-width:30px;max-height:30px;" alt=""></a>
+        {% endif %}
+        <br><br><br>
+    </div>
+    {% for folder in cloudfolder.all_folders.all %}
+
+        <a href="{% url 'cloud:folder' pk=folder.pk %}">
+            <div class="col-sm-3">
+                <div class="row">
+                    <img src="{% static "images/cloud/folder.png" %}" style="max-width:100px;max-height:100px;" alt="">
+                </div>
+                <div class="row">
+                    {{ folder.name }}
+                </div>
+            </div>
+        </a>
+    {% endfor %}
+    {% for file in cloudfolder.files.all %}
+        <a href="{% url 'cloud:home' %}">
+            <div class="col-sm-3">
+                <div class="row">
+                    <img src="{% static "images/cloud/file.png" %}" style="max-width:200px;max-height:200px;" alt="">
+                </div>
+                <div class="row">
+                    {{ file.title }}
+                </div>
+            </div>
+        </a>
+    {% endfor %}
+{% endblock %}
