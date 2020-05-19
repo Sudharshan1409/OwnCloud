@@ -23,10 +23,13 @@ class CloudFolder(models.Model):
 
 class CloudData(models.Model):
     profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name = 'clouds')
-    title = models.CharField(max_length = 32)
+    title = models.CharField(max_length = 32, blank = True)
     data = models.FileField(upload_to = user_directory_path)
     description = models.TextField(blank = True)
     folder = models.ForeignKey(CloudFolder, on_delete=models.CASCADE, related_name='files')
+
+    def filename(self):
+        return os.path.basename(self.data.name)
 
     def __str__ (self):
         return f"{self.profile.user.username.capitalize()} Cloud"

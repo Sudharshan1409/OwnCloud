@@ -1,8 +1,8 @@
 from django.shortcuts import render
-from django.views.generic import TemplateView,DetailView
+from django.views.generic import TemplateView,DetailView,View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
-from .models import CloudFolder
+from .models import CloudFolder,CloudData
 # Create your views here.
 
 class CloudHomePage(LoginRequiredMixin,TemplateView):

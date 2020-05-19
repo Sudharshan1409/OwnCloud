@@ -18,29 +18,36 @@
         {% endif %}
         <br><br><br>
     </div>
-    {% for folder in cloudfolder.all_folders.all %}
-
-        <a href="{% url 'cloud:folder' pk=folder.pk %}">
-            <div class="col-sm-3">
-                <div class="row">
-                    <img src="{% static "images/cloud/folder.png" %}" style="max-width:100px;max-height:100px;" alt="">
+    <div class="row">
+        {% for folder in cloudfolder.all_folders.all %}
+            <a href="{% url 'cloud:folder' pk=folder.pk %}">
+                <div class="col-sm-2">
+                    <div class="row">
+                        <img src="{% static "images/cloud/folder.png" %}" style="max-width:100px;max-height:100px;" alt="">
+                    </div>
+                    <div class="row">
+                        {{ folder.name }}
+                    </div>
                 </div>
-                <div class="row">
-                    {{ folder.name }}
+            </a>
+        {% endfor %}
+    </div>
+    <br><br><br>
+    <div class="row">
+        {% for file in cloudfolder.files.all %}
+            <a href="{% url 'cloud:home' %}">
+                <div class="col-sm-2">
+                    <div class="row">
+                        <center><img src="{% static "images/cloud/file.png" %}" style="max-width:100px;max-height:100px;" alt=""></center>
+                    </div>
+                    <div class="row">
+                        <center>{{ file.filename }}</center>
+                    </div>
                 </div>
-            </div>
-        </a>
-    {% endfor %}
-    {% for file in cloudfolder.files.all %}
-        <a href="{% url 'cloud:home' %}">
-            <div class="col-sm-3">
-                <div class="row">
-                    <img src="{% static "images/cloud/file.png" %}" style="max-width:200px;max-height:200px;" alt="">
-                </div>
-                <div class="row">
-                    {{ file.title }}
-                </div>
-            </div>
-        </a>
-    {% endfor %}
+            </a>
+        {% endfor %}
+    </div>
+    <br><br>
+    <a href="https://www.google.com"><input type="button" value="Add File" class="btn btn-primary"></a>
+    <br><br><br>
 {% endblock %}
