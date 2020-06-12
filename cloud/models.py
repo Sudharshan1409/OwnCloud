@@ -14,7 +14,7 @@ def user_directory_path(instance, filename):
 class CloudFolder(models.Model):
     profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name = 'folders')
     name = models.CharField(max_length = 32)
-    path = models.CharField(max_length = 2048)
+    path = models.CharField(max_length = 2048, null=True, blank=True)
     parent_folder = models.ForeignKey('self',on_delete = models.CASCADE, related_name='all_folders',blank=True, null = True)
 
 

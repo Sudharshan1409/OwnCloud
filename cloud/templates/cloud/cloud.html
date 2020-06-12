@@ -48,40 +48,37 @@
         {% endfor %}
     </div>
     <button class="open-button" onclick="openForm()">Upload File</button>
-    <button class="open-button1" onclick="openForm1()">Upload File</button>
+    <button class="open-button1" onclick="openForm1()">Create Folder</button>
     <div class="form-popup" id="myForm">
       <form action="{% url 'cloud:add_file' %}" method="post" class="form-container" enctype="multipart/form-data">
         <h1>Upload File</h1>
         {% csrf_token %}
         <input type="hidden" name="profile" value="{{user.userprofile.pk}}">
         <input type="hidden" name="folder" value="{{cloudfolder.pk}}">
+        <input type="hidden" name="backref" value="{% url 'cloud:folder' pk=cloudfolder.pk %}">
 
-
-        <label for="data"><b>File</b></label>
-        <input type="file" name="data" required>
+        <label for="something"><b>File</b></label>
+        <input type="file" name="something" required>
         <br>
 
-        <button type="submit" class="btn">Upload</button>
+        <a href="{% url 'cloud:folder' pk=cloudfolder.pk %}"><button type="submit" class="btn">Upload</button></a>
         <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
       </form>
     </div>
 
     <div class="form-popup1" id="myForm1">
-      <form action="{% url 'cloud:add_file' %}" method="post" class="form-container" enctype="multipart/form-data">
-        <h1>Upload File</h1>
+      <form action="{% url 'cloud:add_folder' %}" method="post" class="form-container" enctype="multipart/form-data">
+        <h1>Create Folder</h1>
         {% csrf_token %}
         <input type="hidden" name="profile" value="{{user.userprofile.pk}}">
-        <input type="hidden" name="folder" value="{{cloudfolder.pk}}">
+        <input type="hidden" name="parent_folder" value="{{cloudfolder.pk}}">
+        <input type="hidden" name="backref" value="{% url 'cloud:folder' pk=cloudfolder.pk %}">
 
-
-        <label for="data"><b>File</b></label>
-        <input type="file" name="data" required>
-        <br>
-        <label for="data"><b>File</b></label>
-        <input type="file" name="data" required>
+        <label for="name"><b>Folder Name</b></label>
+        <input type="text" name="name" required>
         <br>
 
-        <button type="submit" class="btn">Upload</button>
+        <button type="submit" class="btn">Create</button>
         <button type="button" class="btn cancel" onclick="closeForm1()">Close</button>
       </form>
     </div>

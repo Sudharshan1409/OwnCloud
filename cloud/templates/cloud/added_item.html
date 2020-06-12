@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load static %}
+{% load extra_polls %}
+{% block content %}
+    <br>
+    {% if data == 'file' %}
+        <h1>Upload Successful</h1>
+    {% else %}
+        <h1>Successfully Created Folder</h1>
+    {% endif %}
+    <a href="{{link}}"><button type="button" name="button" class="btn btn-primary">Back</button></a>
+{% endblock %}

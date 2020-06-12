@@ -9,6 +9,8 @@ from rest_framework.response import Response
 from .serializer import DataSerializer, FolderSerializer
 from rest_framework.parsers import FormParser
 from rest_framework.parsers import MultiPartParser
+from django.contrib import messages
+from rest_framework.renderers import TemplateHTMLRenderer
 # Create your views here.
 
 class CloudHomePage(LoginRequiredMixin,TemplateView):
@@ -31,19 +33,32 @@ class AddFileAPI(LoginRequiredMixin, APIView):
     parser_classes = (MultiPartParser, FormParser)
     queryset = CloudData.objects.all()
 
+    template_name = 'cloud/added_item.html'
+    # Removing the line below shows the APIview instead of the template.
+    renderer_classes = [TemplateHTMLRenderer]
+
     def post(self, request):
-        # serializer = DataSerializer(data=request.data)
-        # print(request.data)
-        # if serializer.is_valid():
-        #     serializer.save()
-        #     return Response(serializer.data, status=status.HTTP_201_CREATED)
-        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        # return Response('success')
         file_serializer = DataSerializer(data=request.data)
-        print(request.data)
         if file_serializer.is_valid():
             file_serializer.save()
-            response = Response(file_serializer.data, status=status.HTTP_201_CREATED)
+            response = Response({'data':'file', 'link':request.data['backref']}, status=status.HTTP_201_CREATED)
         else:
-            response = Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            response = Response({'data':file_serializer.errors, 'link':request.data['backref']}, status=status.HTTP_400_BAD_REQUEST)
+        return response
+
+class AddFolderAPI(LoginRequiredMixin, APIView):
+    parser_classes = (MultiPartParser, FormParser)
+    queryset = CloudFolder.objects.all()
+
+    template_name = 'cloud/added_item.html'
+    # Removing the line below shows the APIview instead of the template.
+    renderer_classes = [TemplateHTMLRenderer]
+
+    def post(self, request):
+        folder_serializer = FolderSerializer(data=request.data)
+        if folder_serializer.is_valid():
+            folder_serializer.save()
+            response = Response({'data':'folder', 'link':request.data['backref']}, status=status.HTTP_201_CREATED)
+        else:
+            response = Response({'data':folder_serializer.errors, 'link':request.data['backref']}, status=status.HTTP_400_BAD_REQUEST)
         return response
