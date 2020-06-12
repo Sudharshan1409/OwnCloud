@@ -58,7 +58,7 @@
         <input type="hidden" name="backref" value="{% url 'cloud:folder' pk=cloudfolder.pk %}">
 
         <label for="something"><b>File</b></label>
-        <input type="file" name="something" required>
+        <input type="file" name="data" required>
         <br>
 
         <a href="{% url 'cloud:folder' pk=cloudfolder.pk %}"><button type="submit" class="btn">Upload</button></a>
