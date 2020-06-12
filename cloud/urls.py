@@ -4,5 +4,6 @@ app_name = 'cloud'
 
 urlpatterns = [
     path('',views.CloudHomePage.as_view(),name = 'home'),
-    path('<int:pk>/',views.CloudFolderPage.as_view(),name = 'folder')
+    path('<int:pk>/',views.CloudFolderPage.as_view(),name = 'folder'),
+    path('add_file/',views.AddFileAPI.as_view(),name = 'add_file'),
 ]

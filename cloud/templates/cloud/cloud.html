@@ -16,8 +16,8 @@
         {% else %}
             <a href="{% url 'cloud:home' %}"><img src="{% static 'images/cloud/parent_folder.png' %}" style="max-width:30px;max-height:30px;" alt=""></a>
         {% endif %}
-        <br><br><br>
     </div>
+    <br><br><br>
     <div class="row">
         {% for folder in cloudfolder.all_folders.all %}
             <a href="{% url 'cloud:folder' pk=folder.pk %}">
@@ -35,7 +35,7 @@
     <br><br><br>
     <div class="row">
         {% for file in cloudfolder.files.all %}
-            <a href="{% url 'cloud:home' %}">
+            <a href="{{file.data.url}}">
                 <div class="col-sm-2">
                     <div class="row">
                         <center><img src="{% static "images/cloud/file.png" %}" style="max-width:100px;max-height:100px;" alt=""></center>
@@ -47,7 +47,42 @@
             </a>
         {% endfor %}
     </div>
-    <br><br>
-    <a href="https://www.google.com"><input type="button" value="Add File" class="btn btn-primary"></a>
-    <br><br><br>
+    <button class="open-button" onclick="openForm()">Upload File</button>
+    <button class="open-button1" onclick="openForm1()">Upload File</button>
+    <div class="form-popup" id="myForm">
+      <form action="{% url 'cloud:add_file' %}" method="post" class="form-container" enctype="multipart/form-data">
+        <h1>Upload File</h1>
+        {% csrf_token %}
+        <input type="hidden" name="profile" value="{{user.userprofile.pk}}">
+        <input type="hidden" name="folder" value="{{cloudfolder.pk}}">
+
+
+        <label for="data"><b>File</b></label>
+        <input type="file" name="data" required>
+        <br>
+
+        <button type="submit" class="btn">Upload</button>
+        <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+      </form>
+    </div>
+
+    <div class="form-popup1" id="myForm1">
+      <form action="{% url 'cloud:add_file' %}" method="post" class="form-container" enctype="multipart/form-data">
+        <h1>Upload File</h1>
+        {% csrf_token %}
+        <input type="hidden" name="profile" value="{{user.userprofile.pk}}">
+        <input type="hidden" name="folder" value="{{cloudfolder.pk}}">
+
+
+        <label for="data"><b>File</b></label>
+        <input type="file" name="data" required>
+        <br>
+        <label for="data"><b>File</b></label>
+        <input type="file" name="data" required>
+        <br>
+
+        <button type="submit" class="btn">Upload</button>
+        <button type="button" class="btn cancel" onclick="closeForm1()">Close</button>
+      </form>
+    </div>
 {% endblock %}
