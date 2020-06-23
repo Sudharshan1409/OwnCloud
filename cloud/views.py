@@ -1,16 +1,12 @@
-from django.shortcuts import render
-from django.views.generic import TemplateView,DetailView,CreateView
+from django.shortcuts import render, redirect
+from django.views.generic import TemplateView,DetailView,CreateView,DeleteView, View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from .models import CloudFolder,CloudData
-from rest_framework.views import APIView
-from rest_framework import status
-from rest_framework.response import Response
 from .serializer import DataSerializer, FolderSerializer
-from rest_framework.parsers import FormParser
-from rest_framework.parsers import MultiPartParser
 from django.contrib import messages
-from rest_framework.renderers import TemplateHTMLRenderer
+from django.urls import reverse
+from users.models import UserProfile
 # Create your views here.
 
 class CloudHomePage(LoginRequiredMixin,TemplateView):
@@ -29,36 +25,29 @@ class CloudFolderPage(LoginRequiredMixin,DetailView):
     template_name = 'cloud/cloud.html'
     context_object_name = 'cloudfolder'
 
-class AddFileAPI(LoginRequiredMixin, APIView):
-    parser_classes = (MultiPartParser, FormParser)
-    queryset = CloudData.objects.all()
+class AddFileAPI(LoginRequiredMixin,View):
+    # parser_classes = (MultiPartParser, FormParser)
+    # queryset = CloudData.objects.all()
 
-    template_name = 'cloud/added_item.html'
+    # template_name = 'cloud/item.html'
     # Removing the line below shows the APIview instead of the template.
-    renderer_classes = [TemplateHTMLRenderer]
+    # renderer_classes = [TemplateHTMLRenderer]
 
     def post(self, request):
-        file_serializer = DataSerializer(data=request.data)
-        if file_serializer.is_valid():
-            file_serializer.save()
-            response = Response({'data':'file', 'link':request.data['backref']}, status=status.HTTP_201_CREATED)
-        else:
-            response = Response({'data':file_serializer.errors, 'link':request.data['backref']}, status=status.HTTP_400_BAD_REQUEST)
-        return response
+        CloudData.objects.create(profile=UserProfile.objects.get(pk=request.POST['profile']),data=request.FILES['data'],folder=CloudFolder.objects.get(pk=request.POST['folder']))
+        return redirect(request.POST['backref'])
 
-class AddFolderAPI(LoginRequiredMixin, APIView):
-    parser_classes = (MultiPartParser, FormParser)
-    queryset = CloudFolder.objects.all()
 
-    template_name = 'cloud/added_item.html'
+class AddFolderAPI(LoginRequiredMixin,View):
+    # parser_classes = (MultiPartParser, FormParser)
+    # queryset = CloudFolder.objects.all()
+
+    # template_name = 'cloud/item.html'
     # Removing the line below shows the APIview instead of the template.
-    renderer_classes = [TemplateHTMLRenderer]
+    # renderer_classes = [TemplateHTMLRenderer]
 
     def post(self, request):
-        folder_serializer = FolderSerializer(data=request.data)
-        if folder_serializer.is_valid():
-            folder_serializer.save()
-            response = Response({'data':'folder', 'link':request.data['backref']}, status=status.HTTP_201_CREATED)
-        else:
-            response = Response({'data':folder_serializer.errors, 'link':request.data['backref']}, status=status.HTTP_400_BAD_REQUEST)
-        return response
+        parent = CloudFolder.objects.get(pk=request.POST['parent_folder'])
+        path = parent.path + request.POST['name'] + '/'
+        CloudFolder.objects.create(profile=UserProfile.objects.get(pk=request.POST['profile']),name=request.POST['name'],parent_folder=parent, path=path)
+        return redirect(request.POST['backref'])

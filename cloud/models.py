@@ -19,7 +19,7 @@ class CloudFolder(models.Model):
 
 
     def __str__(self):
-        return f"{self.profile.user.username.capitalize()}'s {self.name} Folder"
+        return f"{self.pk} {self.profile.user.username.capitalize()}'s {self.name} Folder"
 
 class CloudData(models.Model):
     profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name = 'clouds')
@@ -32,7 +32,7 @@ class CloudData(models.Model):
         return os.path.basename(self.data.name)
 
     def __str__ (self):
-        return f"{self.profile.user.username.capitalize()} Cloud"
+        return f"{self.pk} {self.profile.user.username.capitalize()} Cloud"
 
 @receiver(post_save, sender = UserProfile)
 def create_folder(sender,created,instance, **kwargs):
