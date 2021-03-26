@@ -7,6 +7,7 @@ from users.models import UserProfile
 from django.shortcuts import get_object_or_404
 from users.exception import StorageFullException
 import os
+from django.conf import settings
 
 def user_directory_path(instance, filename):
     return 'cloud/{0}/{1}'.format(instance.folder.path, filename)
@@ -22,7 +23,7 @@ class CloudFolder(models.Model):
         return f"{self.pk} {self.profile.user.username.capitalize()}'s {self.name} Folder"
 
 class CloudData(models.Model):
-    profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name = 'clouds')
+    profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name = 'cloud_datas')
     title = models.CharField(max_length = 32, blank = True)
     data = models.FileField(upload_to = user_directory_path)
     description = models.TextField(blank = True)
@@ -43,8 +44,8 @@ def create_folder(sender,created,instance, **kwargs):
 @receiver(pre_delete, sender = CloudFolder)
 def before_deletion_of_folder(sender, instance, **kwargs):
     files = instance.files.all()
-    for file in files:
-        file.delete()
+    # for file in files:
+        # file.delete()
 
 
 @receiver(post_delete, sender=CloudData)
@@ -54,6 +55,24 @@ def submission_delete(sender, instance, **kwargs):
     Django does not do this automatically.
     """
     instance.data.delete(False)
+
+@receiver(pre_delete, sender=CloudData)
+def before_delete(sender, instance, **kwargs):
+    profile = instance.profile
+    profile.used_size -= (instance.data.size/1024)/1024
+    profile.percentage_used = (profile.used_size/5120) * 100
+    profile.save()
+
+@receiver(post_delete, sender = CloudFolder)
+def delete_folder(sender,instance, **kwargs):
+    
+    if instance.path[-1] == '/':
+        path = instance.path[:-1]
+    else:
+        path = instance.path
+    print(os.path.join(settings.MEDIA_ROOT, 'cloud', path))
+    os.rmdir(os.path.join(settings.MEDIA_ROOT, 'cloud', path))
+    
 
 
 @receiver(post_save,sender=CloudData)

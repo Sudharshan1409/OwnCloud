@@ -26,12 +26,40 @@
                   </div>
                   <div class="row">
                       <span class="glyphicon glyphicon-option-vertical" onclick="openDeletefolder{{folder.pk}}()" style="padding-left:75%;"></span>
-                      <a href="{{folder.pk}}"><button type="button" id="delbutfolder{{folder.pk}}" name="button" class="btn btn-danger deletebutton">Delete</button></a>
+                      <button type="button" id="delbutfolder{{folder.pk}}" onclick="calldeletefunc({{folder.pk}}, 'folder');" name="button" class="btn btn-danger deletebutton">Delete</button>
                       <a href="{% url 'cloud:folder' pk=folder.pk %}"><center>{{ folder.name }}</center></a>
                   </div>
               </div>
         {% endfor %}
         <script>
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            calldeletefunc = function(pk, type) {
+                $.ajax(
+                {
+                    type:"POST",
+                    headers: {'X-CSRFToken': getCookie('csrftoken')},
+                    url: "{% url 'cloud:delete' %}",
+                    data:{"type": type, "pk": pk, "backref": "{% url 'cloud:folder' pk=cloudfolder.pk %}"},
+                    success: function( data ) 
+                    {
+                        window.location.reload();
+                    }
+                })
+            }
             {% for folder in cloudfolder.all_folders.all %}
                 function openDeletefolder{{folder.pk}}() {
                   if(document.getElementById("delbutfolder{{folder.pk}}").style.display == "block") {
@@ -63,7 +91,7 @@
                   </div>
                   <div class="row">
                       <span class="glyphicon glyphicon-option-vertical" onclick="openDeletefile{{file.pk}}()" style="padding-left:75%;"></span>
-                      <a href="{{file.pk}}"><button type="button" id="delbutfile{{file.pk}}" name="button" class="btn btn-danger deletebutton">Delete</button></a>
+                      <button type="button" id="delbutfile{{file.pk}}" name="button" onclick="calldeletefunc({{file.pk}}, 'file')" class="btn btn-danger deletebutton">Delete</button>
                       <a href="{{file.data.url}}"><center>{{ file.filename }}</center></a>
                   </div>
               </div>

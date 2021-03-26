@@ -3,7 +3,6 @@ from django.views.generic import TemplateView,DetailView,CreateView,DeleteView, 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from .models import CloudFolder,CloudData
-from .serializer import DataSerializer, FolderSerializer
 from django.contrib import messages
 from django.urls import reverse
 from users.models import UserProfile
@@ -26,12 +25,6 @@ class CloudFolderPage(LoginRequiredMixin,DetailView):
     context_object_name = 'cloudfolder'
 
 class AddFileAPI(LoginRequiredMixin,View):
-    # parser_classes = (MultiPartParser, FormParser)
-    # queryset = CloudData.objects.all()
-
-    # template_name = 'cloud/item.html'
-    # Removing the line below shows the APIview instead of the template.
-    # renderer_classes = [TemplateHTMLRenderer]
 
     def post(self, request):
         CloudData.objects.create(profile=UserProfile.objects.get(pk=request.POST['profile']),data=request.FILES['data'],folder=CloudFolder.objects.get(pk=request.POST['folder']))
@@ -39,15 +32,22 @@ class AddFileAPI(LoginRequiredMixin,View):
 
 
 class AddFolderAPI(LoginRequiredMixin,View):
-    # parser_classes = (MultiPartParser, FormParser)
-    # queryset = CloudFolder.objects.all()
-
-    # template_name = 'cloud/item.html'
-    # Removing the line below shows the APIview instead of the template.
-    # renderer_classes = [TemplateHTMLRenderer]
 
     def post(self, request):
         parent = CloudFolder.objects.get(pk=request.POST['parent_folder'])
         path = parent.path + request.POST['name'] + '/'
         CloudFolder.objects.create(profile=UserProfile.objects.get(pk=request.POST['profile']),name=request.POST['name'],parent_folder=parent, path=path)
+        return redirect(request.POST['backref'])
+
+class DeleteAPI(LoginRequiredMixin,View):
+    
+    def post(self, request):
+    
+        # print(request.POST.get('type'), request.POST.get('pk'), request.POST['backref'])
+        if request.POST.get('type') == 'folder':
+            folder = CloudFolder.objects.get(pk=request.POST.get('pk'))
+            folder.delete()
+        else:
+            file = CloudData.objects.get(pk=request.POST.get('pk'))
+            file.delete()
         return redirect(request.POST['backref'])
